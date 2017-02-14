@@ -177,7 +177,7 @@ class Cpdf
      * @var array An array containing options about the document
      * it defaults to turning on the compression of the objects
      */
-    public $options = array('compression' => true);
+    public $options = array('compression' => true, 'disableImagick' => true, 'disableGmagick' => true);
 
     /**
      * @var integer The objectId of the first page of the document
@@ -4370,7 +4370,7 @@ EOT;
         }
 
         // Use PECL gmagick + Graphics Magic to process transparent PNG images
-        if (extension_loaded("gmagick")) {
+        if (empty($this->options['disableGmagick']) && extension_loaded("gmagick")) {
             $gmagick = new \Gmagick($file);
             $gmagick->setimageformat('png');
 
@@ -4401,7 +4401,7 @@ EOT;
 
             $imgplain = imagecreatefrompng($tempfile_plain);
         } // Use PECL imagick + ImageMagic to process transparent PNG images
-        elseif (extension_loaded("imagick")) {
+        elseif (empty($this->options['disableImagick']) && extension_loaded("imagick")) {
             // Native cloning was added to pecl-imagick in svn commit 263814
             // the first version containing it was 3.0.1RC1
             static $imagickClonable = null;
